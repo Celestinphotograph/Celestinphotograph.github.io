@@ -1,44 +1,95 @@
 /* ============================================================
    Celestin Photograph · 图集详情查看器
    ============================================================
-   排版遵循参考图：
-   - 图片靠左摆放（不居中）
-   - 竖图：标题右上角，计数右下角，文字窗口在右侧
-   - 横图：标题左下角，计数右下角，文字窗口在右侧
-   - 背景（白色区域以外）整体模糊
+   - 白色面板居中、较大，固定比例（桌面 3:2 / 移动端 3:4），横竖图切换面板不变
+   - 照片只占白色面板左侧约 60%（不顶满），右侧留白放置标题/张数/文字说明
+   - 竖图：标题右上；横图：标题左下；张数始终右下
+   - 文字说明在白色区域内（右侧留白处，垂直居中），不另建区域
+   - 打开/关闭：面板 + 图片整体渐显 / 渐隐；切换图片硬切
    ============================================================ */
 
 .viewer {
     position: fixed;
     inset: 0;
     z-index: 2000;
-    display: flex;
     opacity: 0;
     visibility: hidden;
-    transition: opacity .3s ease, visibility .3s ease;
+    transition: opacity .45s ease, visibility .45s ease;
 }
 .viewer.open { opacity: 1; visibility: visible; }
 
-/* ---- 背景：模糊掉白色区域以外的信息 ---- */
+/* ---- 背景：模糊 + 压暗（keyframes 细步过渡，避免剧变） ---- */
 .viewer-backdrop {
     position: absolute;
-    inset: -20px;                 /* 稍微放大，避免模糊边缘露白 */
-    background: rgba(255, 255, 255, .14);
-    backdrop-filter: blur(20px) saturate(1.05);
-    -webkit-backdrop-filter: blur(20px) saturate(1.05);
+    inset: -30px;                 /* 稍微放大，避免模糊边缘露锐 */
+    background: rgba(10, 10, 10, .5);   /* 压暗模糊层，突出主体 */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
     opacity: 0;
-    transition: opacity .35s ease;
+    transition: opacity .5s ease;
 }
-.viewer.open .viewer-backdrop { opacity: 1; }
+.viewer.open .viewer-backdrop {
+    opacity: 1;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    animation: viewerBlurRamp .65s cubic-bezier(.22, .61, .36, 1);
+}
+.viewer.closing .viewer-backdrop {
+    animation: viewerBlurOut .55s cubic-bezier(.22, .61, .36, 1);
+}
+@keyframes viewerBlurRamp {
+    0%   { backdrop-filter: blur(0px);   -webkit-backdrop-filter: blur(0px); }
+    6%   { backdrop-filter: blur(1.5px); -webkit-backdrop-filter: blur(1.5px); }
+    12%  { backdrop-filter: blur(3px);   -webkit-backdrop-filter: blur(3px); }
+    18%  { backdrop-filter: blur(4.5px); -webkit-backdrop-filter: blur(4.5px); }
+    24%  { backdrop-filter: blur(6px);   -webkit-backdrop-filter: blur(6px); }
+    30%  { backdrop-filter: blur(8px);   -webkit-backdrop-filter: blur(8px); }
+    36%  { backdrop-filter: blur(10px);  -webkit-backdrop-filter: blur(10px); }
+    42%  { backdrop-filter: blur(12px);  -webkit-backdrop-filter: blur(12px); }
+    48%  { backdrop-filter: blur(14px);  -webkit-backdrop-filter: blur(14px); }
+    54%  { backdrop-filter: blur(16px);  -webkit-backdrop-filter: blur(16px); }
+    60%  { backdrop-filter: blur(18px);  -webkit-backdrop-filter: blur(18px); }
+    66%  { backdrop-filter: blur(20px);  -webkit-backdrop-filter: blur(20px); }
+    74%  { backdrop-filter: blur(21px);  -webkit-backdrop-filter: blur(21px); }
+    84%  { backdrop-filter: blur(22px);  -webkit-backdrop-filter: blur(22px); }
+    100% { backdrop-filter: blur(22px);  -webkit-backdrop-filter: blur(22px); }
+}
+@keyframes viewerBlurOut {
+    0%   { backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); }
+    20%  { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    34%  { backdrop-filter: blur(17px); -webkit-backdrop-filter: blur(17px); }
+    46%  { backdrop-filter: blur(13px); -webkit-backdrop-filter: blur(13px); }
+    58%  { backdrop-filter: blur(9px);  -webkit-backdrop-filter: blur(9px); }
+    68%  { backdrop-filter: blur(6px);  -webkit-backdrop-filter: blur(6px); }
+    78%  { backdrop-filter: blur(3px);  -webkit-backdrop-filter: blur(3px); }
+    88%  { backdrop-filter: blur(1.5px);-webkit-backdrop-filter: blur(1.5px); }
+    100% { backdrop-filter: blur(0px);  -webkit-backdrop-filter: blur(0px); }
+}
 
-/* ---- 图片舞台：靠左、垂直居中 ---- */
+/* ---- 白色面板：居中、较大、固定比例 ----
+   面板不做独立过渡动画，打开/关闭时整体跟随 viewer 渐显/渐隐；
+   pointer-events 开启，使点击面板（含照片/文字）不触发“点击背景关闭”。 */
+.viewer-panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(88vw, 124vh);
+    aspect-ratio: 3 / 2;
+    background: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 26px 90px rgba(0, 0, 0, .32);
+    z-index: 0;
+    pointer-events: auto;
+}
+
+/* ---- 照片区：只占白色面板左侧约 60%，照片靠左（不顶满） ---- */
 .viewer-stage {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: clamp(24px, 8vw, 150px);
-    max-width: 60vw;
-    max-height: 78vh;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 60%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -46,92 +97,68 @@
 }
 .viewer-stage img {
     max-width: 100%;
-    max-height: 78vh;
+    max-height: 100%;
     object-fit: contain;
+    display: block;
+    background: #fff;
     user-select: none;
     -webkit-user-drag: none;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, .16);
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity .35s var(--ease), transform .35s var(--ease);
-    background: #f5f5f5;
+    /* 无过渡：切换图片硬切；打开/关闭时跟随 viewer 整体渐显/渐隐 */
 }
-.viewer-stage img.loaded { opacity: 1; transform: translateY(0); }
 
-/* 竖图：更窄，右侧留出大片空白（标题/计数/文字窗口所在） */
-.viewer.is-portrait .viewer-stage { max-width: 44vw; max-height: 80vh; }
-.viewer.is-portrait .viewer-stage img { max-height: 80vh; }
-
-/* 横图：稍小，让出底部与右侧 */
-.viewer.is-landscape .viewer-stage { max-width: 58vw; max-height: 60vh; }
-.viewer.is-landscape .viewer-stage img { max-height: 60vh; }
-
-/* ---- 右上角：图集标题（竖图） ---- */
+/* ---- 标题：竖图右上（右侧留白处）；横图左下（照片下方留白处） ---- */
 .viewer-title {
     position: absolute;
-    top: calc(var(--bar1-h) + 26px);
-    right: clamp(24px, 6vw, 96px);
-    max-width: 34vw;
+    top: clamp(14px, 2.6vw, 28px);
+    right: clamp(16px, 2.6vw, 32px);
+    max-width: 34%;
     text-align: right;
     font-family: var(--font-serif);
-    font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+    font-size: clamp(1.05rem, 1.8vw, 1.45rem);
     font-weight: 600;
     letter-spacing: .5px;
     color: var(--text);
     z-index: 2;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity .35s var(--ease), transform .35s var(--ease);
 }
-.viewer.open .viewer-title { opacity: 1; transform: translateY(0); }
-
-/* ---- 横图：标题移到左下角（竖图保持右上角） ---- */
 .viewer.is-landscape .viewer-title {
     top: auto;
-    bottom: clamp(26px, 9vh, 70px);
-    left: clamp(24px, 9vw, 170px);
+    bottom: clamp(14px, 2.6vh, 26px);
+    left: clamp(16px, 2.6vw, 32px);
     right: auto;
     text-align: left;
-    max-width: 44vw;
+    max-width: 34%;
 }
 
-/* ---- 右下角：当前第几张 / 总张数 ---- */
+/* ---- 张数：右下角 ---- */
 .viewer-count {
     position: absolute;
-    bottom: clamp(24px, 6vh, 56px);
-    right: clamp(24px, 6vw, 96px);
-    font-size: .98rem;
+    bottom: clamp(14px, 2.6vh, 26px);
+    right: clamp(16px, 2.6vw, 32px);
+    font-size: .95rem;
     font-weight: 600;
     letter-spacing: 1px;
     color: var(--text);
     z-index: 2;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity .35s var(--ease), transform .35s var(--ease) .05s;
 }
-.viewer.open .viewer-count { opacity: 1; transform: translateY(0); }
 
-/* ---- 预留文字窗口（每张图的文字说明） ---- */
+/* ---- 文字说明：白色面板右侧留白处，垂直居中 ---- */
 .viewer-note {
     position: absolute;
-    right: clamp(24px, 6vw, 96px);
-    top: calc(var(--bar1-h) + clamp(90px, 16vh, 150px));
-    width: min(320px, 26vw);
-    z-index: 2;
+    top: 50%;
+    transform: translateY(-50%);
+    right: clamp(16px, 3vw, 40px);
+    width: min(300px, 34%);
     font-size: .92rem;
     line-height: 1.9;
     color: #555;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity .4s var(--ease), transform .4s var(--ease) .08s;
+    z-index: 2;
 }
-.viewer.open .viewer-note { opacity: 1; transform: translateY(0); }
 .viewer-note .note-text { white-space: pre-line; }
 .viewer-note .note-empty {
     color: #b9b9b9;
     border: 1px dashed #d8d8d8;
     border-radius: 6px;
-    padding: 12px 14px;
+    padding: 10px 14px;
     font-size: .84rem;
     text-align: center;
     letter-spacing: .5px;
@@ -155,7 +182,7 @@
 }
 .viewer-close:hover { color: #000; background: rgba(255, 255, 255, .95); transform: rotate(90deg); }
 
-/* ---- 左右切换按钮（鼠标移动显示 / 静止隐藏 / 首开提示） ---- */
+/* ---- 左右切换按钮（JS 定位到面板两侧；鼠标移动显示 / 静止隐藏 / 首开提示） ---- */
 .viewer-nav {
     position: absolute;
     top: 50%;
@@ -176,8 +203,6 @@
     transition: opacity .3s ease, color .2s, background .2s;
 }
 .viewer-nav:hover { color: var(--accent); }
-.viewer-nav.prev { left: clamp(16px, 4vw, 56px); }
-.viewer-nav.next { right: clamp(16px, 4vw, 56px); }
 
 .viewer.show-nav .viewer-nav {
     opacity: 1;
@@ -185,39 +210,17 @@
 }
 
 /* ============================================================
-   响应式（移动端：左右滑动切换，隐藏箭头，文字窗口移到下方）
+   响应式（移动端：左右滑动切换，隐藏箭头；面板 3:4 竖版，照片靠左）
    ============================================================ */
 @media (max-width: 768px) {
-    .viewer-backdrop { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-
-    .viewer-stage {
-        left: 4vw;
-        max-width: 92vw;
-        max-height: 66vh;
-        top: 46%;
+    .viewer-panel {
+        width: min(92vw, 62vh);
+        aspect-ratio: 3 / 4;
     }
-    .viewer-stage img { max-height: 66vh; }
-    .viewer.is-portrait .viewer-stage { max-width: 92vw; max-height: 66vh; }
-    .viewer.is-portrait .viewer-stage img { max-height: 66vh; }
-    .viewer.is-landscape .viewer-stage { max-width: 92vw; max-height: 44vh; }
-    .viewer.is-landscape .viewer-stage img { max-height: 44vh; }
-
-    .viewer-title { top: calc(var(--bar1-h) + 16px); right: 16px; max-width: 70vw; font-size: 1rem; }
-    .viewer.is-landscape .viewer-title { top: calc(var(--bar1-h) + 16px); bottom: auto; left: auto; right: 16px; text-align: right; }
-    .viewer-count { bottom: 18px; right: 16px; font-size: .88rem; }
-
-    .viewer-note {
-        right: auto;
-        left: 50%;
-        transform: translateX(-50%);
-        top: auto;
-        bottom: 56px;
-        width: min(88vw, 420px);
-        text-align: center;
-        max-height: 22vh;
-        overflow: hidden;
-    }
-
+    .viewer-title { top: 12px; right: 12px; max-width: 38%; font-size: .98rem; }
+    .viewer.is-landscape .viewer-title { top: auto; bottom: 12px; left: 12px; right: auto; text-align: left; max-width: 38%; }
+    .viewer-count { bottom: 12px; right: 12px; font-size: .85rem; }
+    .viewer-note { right: 12px; width: 36%; }
     .viewer-close { top: calc(var(--bar1-h) + 10px); left: 12px; }
     .viewer-nav { display: none; }      /* 移动端用滑动 */
 }

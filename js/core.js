@@ -31,10 +31,8 @@ window.CP = (function () {
 
     /* ---------------- 图标（内联 SVG，便于随 currentColor 变色） ---------------- */
     var ICONS = {
-        // 上箭头（展开状态，素材 24gl-arrowUp2）
+        // 上箭头（展开朝上，收起时整体旋转 180° 朝下）
         up: '<svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M533.333333 256a21.266667 21.266667 0 0 0-15.086666 6.246667l-426.666667 426.666666a21.333333 21.333333 0 0 0 30.173333 30.173334L533.333333 307.5l411.58 411.586667a21.333333 21.333333 0 0 0 30.173334-30.173334l-426.666667-426.666666A21.266667 21.266667 0 0 0 533.333333 256z"/></svg>',
-        // 下箭头（收起状态，素材 箭头_列表收起）
-        down: '<svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M721.833102 597.433606l-60.943176 60.943176-211.189226-211.189225L510.643877 386.244381z"/><path d="M299.323503 597.30514l60.943176 60.943176 211.189226-211.189225L510.512728 386.115915z"/></svg>',
         menu: '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
         close: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
         prev: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
@@ -198,6 +196,7 @@ window.CP = (function () {
             viewCategory: $id('view-category'),
             viewer: $id('viewer'),
             viewerBackdrop: $id('viewerBackdrop'),
+            viewerPanel: $id('viewerPanel'),
             viewerClose: $id('viewerClose'),
             viewerPrev: $id('viewerPrev'),
             viewerNext: $id('viewerNext'),
@@ -220,10 +219,9 @@ window.CP = (function () {
         window.CP.els = els;
         window.CP.state = state;
 
-        // 顶栏图标
+        // 顶栏图标：只保留一个大箭头（展开朝上，收起时旋转 180° 朝下）
         if (els.barToggle) {
-            els.barToggle.innerHTML = '<span class="icon icon-up">' + ICONS.up + '</span>' +
-                                      '<span class="icon icon-down">' + ICONS.down + '</span>';
+            els.barToggle.innerHTML = '<span class="icon icon-up">' + ICONS.up + '</span>';
         }
         if (els.moreBtn) els.moreBtn.innerHTML = ICONS.menu;
 

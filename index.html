@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -6,10 +6,10 @@
     <title>Celestin Photograph</title>
     <meta name="description" content="Celestin Photograph · 摄影作品集" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link rel="stylesheet" href="css/base.css?v=3" />
-    <link rel="stylesheet" href="css/home.css?v=3" />
-    <link rel="stylesheet" href="css/category.css?v=3" />
-    <link rel="stylesheet" href="css/viewer.css?v=3" />
+    <link rel="stylesheet" href="css/base.css?v=6" />
+    <link rel="stylesheet" href="css/home.css?v=6" />
+    <link rel="stylesheet" href="css/category.css?v=6" />
+    <link rel="stylesheet" href="css/viewer.css?v=6" />
 </head>
 <body>
 
@@ -54,13 +54,15 @@
     <!-- ================= 图集详情查看器 ================= -->
     <div class="viewer" id="viewer" aria-hidden="true" role="dialog" aria-modal="true">
         <div class="viewer-backdrop" id="viewerBackdrop"></div>
+        <div class="viewer-panel" id="viewerPanel">
+            <div class="viewer-stage" id="viewerStage"></div>
+            <div class="viewer-title" id="viewerTitle"></div>
+            <div class="viewer-count" id="viewerCount"></div>
+            <div class="viewer-note" id="viewerNote"></div>
+        </div>
         <button class="viewer-close" id="viewerClose" aria-label="关闭查看器"></button>
         <button class="viewer-nav prev" id="viewerPrev" aria-label="上一张"></button>
         <button class="viewer-nav next" id="viewerNext" aria-label="下一张"></button>
-        <div class="viewer-title" id="viewerTitle"></div>
-        <div class="viewer-count" id="viewerCount"></div>
-        <div class="viewer-note" id="viewerNote"></div>
-        <div class="viewer-stage" id="viewerStage"></div>
     </div>
 
     <!-- ================= 页脚（版权） ================= -->
@@ -72,12 +74,12 @@
     </footer>
 
     <!-- 数据配置（★ 用户编辑的文件） -->
-    <script src="data/site-data.js?v=3"></script>
+    <script src="data/site-data.js?v=6"></script>
     <!-- 逻辑模块 -->
-    <script src="js/core.js?v=3"></script>
-    <script src="js/home.js?v=3"></script>
-    <script src="js/category.js?v=3"></script>
-    <script src="js/viewer.js?v=3"></script>
-    <script src="js/app.js?v=3"></script>
+    <script src="js/core.js?v=6"></script>
+    <script src="js/home.js?v=6"></script>
+    <script src="js/category.js?v=6"></script>
+    <script src="js/viewer.js?v=6"></script>
+    <script src="js/app.js?v=6"></script>
 </body>
 </html>
