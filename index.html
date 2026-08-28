@@ -1,11 +1,963 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我是CQY蝶</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>光影图片社 · 视觉叙事</title>
+    <!-- 使用系统字体回退，避免加载慢 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ========== 全局重置 & 字体 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f8f7f4;
+            color: #1e1e1e;
+            line-height: 1.6;
+            padding-top: 70px; /* 为固定导航留空 */
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        ul {
+            list-style: none;
+        }
+
+        /* ========== 顶部导航 ========== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            z-index: 1000;
+            padding: 12px 0;
+            transition: background 0.2s;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+            color: #222;
+        }
+        .logo-icon {
+            font-size: 1.6rem;
+            color: #b8860b;
+        }
+        .logo-text {
+            background: linear-gradient(135deg, #3a3a3a, #7a7a7a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-list {
+            display: flex;
+            gap: 28px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .nav-link {
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+            color: #555;
+        }
+        .nav-link:hover,
+        .nav-link.active {
+            color: #b8860b;
+            border-bottom-color: #b8860b;
+        }
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .header-actions button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #444;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 4px 6px;
+        }
+        .header-actions button:hover {
+            color: #b8860b;
+        }
+        .menu-toggle {
+            display: none;
+        }
+
+        /* 移动端菜单 */
+        .mobile-menu {
+            display: none;
+            background: #fff;
+            padding: 12px 20px 20px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+        }
+        .mobile-menu.open {
+            display: block;
+        }
+        .mobile-nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .mobile-nav-link {
+            font-weight: 500;
+            color: #444;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .mobile-nav-link.active {
+            color: #b8860b;
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 340px;
+            max-height: 600px;
+            background: #eae8e3;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .hero-slider {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
+            background-color: #ccc;
+        }
+        .hero-slide.active {
+            opacity: 1;
+        }
+        .hero-slide .hero-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3);
+            padding: 10px 18px;
+            border-radius: 4px;
+            backdrop-filter: blur(3px);
+        }
+        .hero-slide .hero-caption h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+        .hero-slide .hero-caption p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .hero-indicators {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        .hero-indicators span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .hero-indicators span.active {
+            background: #fff;
+            transform: scale(1.2);
+        }
+
+        /* ========== 画廊 ========== */
+        .gallery-section {
+            padding: 20px 0 60px;
+        }
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .gallery-title {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        .gallery-count {
+            font-size: 0.9rem;
+            color: #777;
+            background: #eee;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* 分类标签 */
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .tab-btn {
+            padding: 8px 20px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #555;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tab-btn:hover {
+            border-color: #b8860b;
+            color: #b8860b;
+        }
+        .tab-btn.active {
+            background: #b8860b;
+            color: #fff;
+            border-color: #b8860b;
+        }
+
+        /* 网格 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .gallery-item {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            transition: transform 0.25s ease, box-shadow 0.25s;
+            cursor: pointer;
+        }
+        .gallery-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0eee9;
+        }
+        .gallery-item .item-info {
+            padding: 14px 16px 16px;
+        }
+        .gallery-item .item-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .gallery-item .item-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #777;
+        }
+        .gallery-item .item-category {
+            background: #f0ede8;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #5a5a5a;
+        }
+        .gallery-loading {
+            text-align: center;
+            padding: 40px 0;
+            color: #888;
+        }
+
+        /* ========== 模态框 ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-container {
+            background: #fff;
+            max-width: 900px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            color: #333;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: row;
+            overflow-y: auto;
+        }
+        .modal-image-wrap {
+            flex: 1.2;
+            background: #f0eee9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-image-wrap img {
+            max-height: 500px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        .modal-info {
+            flex: 0.8;
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .modal-info h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+        .modal-info p {
+            color: #555;
+            font-size: 0.95rem;
+        }
+        .modal-info p i {
+            width: 22px;
+            color: #b8860b;
+        }
+        .modal-description {
+            margin-top: 8px;
+            border-top: 1px solid #eee;
+            padding-top: 14px;
+            color: #444;
+            line-height: 1.7;
+        }
+
+        /* ========== 页脚 ========== */
+        .site-footer {
+            background: #1e1e1e;
+            color: #ccc;
+            padding: 40px 0 20px;
+            margin-top: 20px;
+        }
+        .footer-inner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 30px;
+        }
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-tagline {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        .footer-col h4 {
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .footer-col ul li {
+            margin-bottom: 8px;
+        }
+        .footer-col ul li a {
+            opacity: 0.7;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .footer-col ul li a:hover {
+            opacity: 1;
+            color: #b8860b;
+        }
+        .social-links {
+            display: flex;
+            gap: 14px;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+        .social-links a {
+            color: #aaa;
+            transition: 0.2s;
+        }
+        .social-links a:hover {
+            color: #b8860b;
+        }
+        .footer-copy {
+            font-size: 0.8rem;
+            opacity: 0.5;
+            margin-top: 8px;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .nav-list {
+                display: none;
+            }
+            .menu-toggle {
+                display: inline-block;
+            }
+            .hero {
+                height: 50vh;
+                min-height: 240px;
+            }
+            .modal-content {
+                flex-direction: column;
+            }
+            .modal-image-wrap img {
+                max-height: 300px;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 16px;
+            }
+            .gallery-item img {
+                height: 150px;
+            }
+        }
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .gallery-item img {
+                height: 120px;
+            }
+            .tab-btn {
+                padding: 4px 14px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>我是逆蝶</h1>
+
+    <!-- ========== 顶部导航 ========== -->
+    <header class="site-header" id="siteHeader">
+        <div class="container header-inner">
+            <div class="logo-area">
+                <a href="#" class="logo-link">
+                    <span class="logo-icon"><i class="fas fa-camera-retro"></i></span>
+                    <span class="logo-text">光影图片社</span>
+                </a>
+            </div>
+            <nav class="main-nav" id="mainNav">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active" data-category="all">全部</a></li>
+                    <li><a href="#" class="nav-link" data-category="portrait">人像</a></li>
+                    <li><a href="#" class="nav-link" data-category="landscape">风景</a></li>
+                    <li><a href="#" class="nav-link" data-category="documentary">纪实</a></li>
+                    <li><a href="#" class="nav-link" data-category="street">街头</a></li>
+                    <li><a href="#" class="nav-link" data-category="art">艺术</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button class="search-toggle" id="searchToggle" aria-label="搜索" style="display:none;">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端下拉菜单 -->
+        <div class="mobile-menu" id="mobileMenu">
+            <ul class="mobile-nav-list">
+                <li><a href="#" class="mobile-nav-link active" data-category="all">全部</a></li>
+                <li><a href="#" class="mobile-nav-link" data-category="portrait">人像</a></li>
+                <li><a href="#" class="mobile-nav-link" data-category="landscape">风景</a></li>
+                <li><a href="#" class="mobile-nav-link" data-category="documentary">纪实</a></li>
+                <li><a href="#" class="mobile-nav-link" data-category="street">街头</a></li>
+                <li><a href="#" class="mobile-nav-link" data-category="art">艺术</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ========== HERO 区域 ========== -->
+    <section class="hero" id="hero">
+        <div class="hero-slider" id="heroSlider">
+            <!-- 由 JS 动态渲染 -->
+        </div>
+        <div class="hero-indicators" id="heroIndicators"></div>
+    </section>
+
+    <!-- ========== 画廊 ========== -->
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-header">
+                <h2 class="gallery-title">作品集</h2>
+                <span class="gallery-count" id="galleryCount">共 0 张</span>
+            </div>
+            <!-- 分类标签 (桌面增强) -->
+            <div class="category-tabs" id="categoryTabs">
+                <button class="tab-btn active" data-category="all">全部</button>
+                <button class="tab-btn" data-category="portrait">人像</button>
+                <button class="tab-btn" data-category="landscape">风景</button>
+                <button class="tab-btn" data-category="documentary">纪实</button>
+                <button class="tab-btn" data-category="street">街头</button>
+                <button class="tab-btn" data-category="art">艺术</button>
+            </div>
+            <!-- 图片网格 -->
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- 由 JS 动态渲染 -->
+            </div>
+            <div class="gallery-loading" id="galleryLoading" style="display:none;">
+                <i class="fas fa-spinner fa-spin"></i> 加载中...
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 图片详情模态框 ========== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            <div class="modal-content" id="modalContent">
+                <div class="modal-image-wrap">
+                    <img src="" alt="" id="modalImage" />
+                </div>
+                <div class="modal-info">
+                    <h3 id="modalTitle">标题</h3>
+                    <p class="modal-photographer" id="modalPhotographer"><i class="fas fa-user"></i> 摄影师</p>
+                    <p class="modal-category" id="modalCategory"><i class="fas fa-tag"></i> 分类</p>
+                    <p class="modal-year" id="modalYear"><i class="fas fa-calendar-alt"></i> 年份</p>
+                    <p class="modal-description" id="modalDescription">描述文字</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 页脚 ========== -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-col">
+                <span class="footer-logo"><i class="fas fa-camera-retro"></i> 光影图片社</span>
+                <p class="footer-tagline">以镜头记录时代，用影像讲述故事</p>
+            </div>
+            <div class="footer-col">
+                <h4>分类</h4>
+                <ul>
+                    <li><a href="#" data-category="portrait">人像</a></li>
+                    <li><a href="#" data-category="landscape">风景</a></li>
+                    <li><a href="#" data-category="documentary">纪实</a></li>
+                    <li><a href="#" data-category="street">街头</a></li>
+                    <li><a href="#" data-category="art">艺术</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>关于</h4>
+                <ul>
+                    <li><a href="#">我们的故事</a></li>
+                    <li><a href="#">摄影师</a></li>
+                    <li><a href="#">联系</a></li>
+                    <li><a href="#">加入我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>关注</h4>
+                <div class="social-links">
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="WeChat"><i class="fab fa-weixin"></i></a>
+                </div>
+                <p class="footer-copy">&copy; 2026 光影图片社 · 所有权利保留</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== JavaScript ========== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // 1. 图片数据 —— 请在此处替换为您自己的图片路径和信息
+            // ============================================================
+            const imagesData = [
+                {
+                    id: 1,
+                    title: '都市晨光',
+                    category: 'street',
+                    photographer: '张无忌',
+                    year: '2025',
+                    description: '清晨的纽约街头，光影与行人交织出城市的韵律。',
+                    imageUrl: 'https://picsum.photos/seed/street1/600/400' // 示例图片，请替换
+                },
+                {
+                    id: 2,
+                    title: '孤峰晚照',
+                    category: 'landscape',
+                    photographer: '李慕白',
+                    year: '2024',
+                    description: '落基山脉的黄昏，最后一缕金光洒在山脊上。',
+                    imageUrl: 'https://picsum.photos/seed/land1/600/400'
+                },
+                {
+                    id: 3,
+                    title: '茶馆老人',
+                    category: 'portrait',
+                    photographer: '陈逸飞',
+                    year: '2023',
+                    description: '成都老茶馆里，一位老人端着盖碗茶，目光沉静。',
+                    imageUrl: 'https://picsum.photos/seed/port1/600/400'
+                },
+                {
+                    id: 4,
+                    title: '地铁即景',
+                    category: 'documentary',
+                    photographer: '王凯',
+                    year: '2025',
+                    description: '东京地铁高峰，人群的流动与静止的瞬间。',
+                    imageUrl: 'https://picsum.photos/seed/doc1/600/400'
+                },
+                {
+                    id: 5,
+                    title: '抽象构成',
+                    category: 'art',
+                    photographer: '赵无极',
+                    year: '2024',
+                    description: '以光影和几何形体重构视觉语言。',
+                    imageUrl: 'https://picsum.photos/seed/art1/600/400'
+                },
+                {
+                    id: 6,
+                    title: '雨后小巷',
+                    category: 'street',
+                    photographer: '周迅',
+                    year: '2025',
+                    description: '雨后的江南小巷，水光倒映着古老的砖墙。',
+                    imageUrl: 'https://picsum.photos/seed/street2/600/400'
+                },
+                {
+                    id: 7,
+                    title: '极光之舞',
+                    category: 'landscape',
+                    photographer: '刘星',
+                    year: '2023',
+                    description: '冰岛极光下，自然的色彩盛宴。',
+                    imageUrl: 'https://picsum.photos/seed/land2/600/400'
+                },
+                {
+                    id: 8,
+                    title: '凝视',
+                    category: 'portrait',
+                    photographer: '林徽因',
+                    year: '2024',
+                    description: '深邃的眼神中藏着故事。',
+                    imageUrl: 'https://picsum.photos/seed/port2/600/400'
+                },
+                {
+                    id: 9,
+                    title: '市集黄昏',
+                    category: 'documentary',
+                    photographer: '何藩',
+                    year: '2025',
+                    description: '香港街市，日落时分的人间烟火。',
+                    imageUrl: 'https://picsum.photos/seed/doc2/600/400'
+                },
+                {
+                    id: 10,
+                    title: '蓝调时刻',
+                    category: 'art',
+                    photographer: '蔡国强',
+                    year: '2024',
+                    description: '光影实验，探索色彩的边界。',
+                    imageUrl: 'https://picsum.photos/seed/art2/600/400'
+                }
+            ];
+
+            // ============================================================
+            // 2. DOM 引用
+            // ============================================================
+            const heroSlider = document.getElementById('heroSlider');
+            const heroIndicators = document.getElementById('heroIndicators');
+            const galleryGrid = document.getElementById('galleryGrid');
+            const galleryCount = document.getElementById('galleryCount');
+            const categoryTabs = document.getElementById('categoryTabs');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalPhotographer = document.getElementById('modalPhotographer');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalYear = document.getElementById('modalYear');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalClose = document.getElementById('modalClose');
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link, .tab-btn');
+            const footerCatLinks = document.querySelectorAll('.footer-col ul li a[data-category]');
+
+            let currentCategory = 'all';
+            let currentSlide = 0;
+            let slideInterval;
+
+            // ============================================================
+            // 3. 渲染 HERO 轮播
+            // ============================================================
+            function renderHero() {
+                // 取前 5 张作为轮播（或全部）
+                const heroImages = imagesData.slice(0, 5);
+                heroSlider.innerHTML = '';
+                heroIndicators.innerHTML = '';
+
+                heroImages.forEach((img, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'hero-slide' + (index === 0 ? ' active' : '');
+                    slide.style.backgroundImage = `url(${img.imageUrl})`;
+                    slide.innerHTML = `
+                        <div class="hero-caption">
+                            <h2>${img.title}</h2>
+                            <p>${img.photographer} · ${img.category}</p>
+                        </div>
+                    `;
+                    heroSlider.appendChild(slide);
+
+                    const dot = document.createElement('span');
+                    dot.className = index === 0 ? 'active' : '';
+                    dot.dataset.index = index;
+                    dot.addEventListener('click', () => goToSlide(index));
+                    heroIndicators.appendChild(dot);
+                });
+
+                startSlideShow();
+            }
+
+            function goToSlide(index) {
+                const slides = heroSlider.querySelectorAll('.hero-slide');
+                const dots = heroIndicators.querySelectorAll('span');
+                if (!slides.length) return;
+                slides.forEach((s, i) => s.classList.toggle('active', i === index));
+                dots.forEach((d, i) => d.classList.toggle('active', i === index));
+                currentSlide = index;
+                resetSlideShow();
+            }
+
+            function startSlideShow() {
+                if (slideInterval) clearInterval(slideInterval);
+                slideInterval = setInterval(() => {
+                    const slides = heroSlider.querySelectorAll('.hero-slide');
+                    if (slides.length === 0) return;
+                    const next = (currentSlide + 1) % slides.length;
+                    goToSlide(next);
+                }, 4000);
+            }
+
+            function resetSlideShow() {
+                if (slideInterval) clearInterval(slideInterval);
+                startSlideShow();
+            }
+
+            // ============================================================
+            // 4. 渲染画廊（根据分类）
+            // ============================================================
+            function renderGallery(category) {
+                const filtered = category === 'all' ? imagesData : imagesData.filter(img => img.category === category);
+                galleryGrid.innerHTML = '';
+                galleryCount.textContent = `共 ${filtered.length} 张`;
+
+                if (filtered.length === 0) {
+                    galleryGrid.innerHTML = `<p style="grid-column:1/-1;text-align:center;padding:40px 0;color:#888;">该分类暂无作品</p>`;
+                    return;
+                }
+
+                filtered.forEach(img => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `
+                        <img src="${img.imageUrl}" alt="${img.title}" loading="lazy" />
+                        <div class="item-info">
+                            <div class="item-title">${img.title}</div>
+                            <div class="item-meta">
+                                <span>${img.photographer}</span>
+                                <span class="item-category">${img.category}</span>
+                            </div>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => openModal(img));
+                    galleryGrid.appendChild(item);
+                });
+            }
+
+            // ============================================================
+            // 5. 模态框
+            // ============================================================
+            function openModal(img) {
+                modalImage.src = img.imageUrl;
+                modalImage.alt = img.title;
+                modalTitle.textContent = img.title;
+                modalPhotographer.innerHTML = `<i class="fas fa-user"></i> ${img.photographer}`;
+                modalCategory.innerHTML = `<i class="fas fa-tag"></i> ${img.category}`;
+                modalYear.innerHTML = `<i class="fas fa-calendar-alt"></i> ${img.year}`;
+                modalDescription.textContent = img.description;
+                modalOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            // ============================================================
+            // 6. 分类切换逻辑
+            // ============================================================
+            function setActiveCategory(category, triggerElement) {
+                currentCategory = category;
+                // 更新所有导航和标签的激活状态
+                document.querySelectorAll('.nav-link, .mobile-nav-link, .tab-btn').forEach(el => {
+                    el.classList.toggle('active', el.dataset.category === category);
+                });
+                // 同步移动端菜单
+                document.querySelectorAll('.mobile-nav-link').forEach(el => {
+                    el.classList.toggle('active', el.dataset.category === category);
+                });
+                renderGallery(category);
+            }
+
+            // ============================================================
+            // 7. 事件绑定
+            // ============================================================
+            // 顶部导航点击
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const cat = link.dataset.category;
+                    setActiveCategory(cat, link);
+                    // 关闭移动菜单
+                    mobileMenu.classList.remove('open');
+                });
+            });
+
+            // 移动端菜单点击
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const cat = link.dataset.category;
+                    setActiveCategory(cat, link);
+                    mobileMenu.classList.remove('open');
+                });
+            });
+
+            // 分类标签点击
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const cat = btn.dataset.category;
+                    setActiveCategory(cat, btn);
+                    // 同步顶部导航高亮
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.category === cat));
+                    document.querySelectorAll('.mobile-nav-link').forEach(l => l.classList.toggle('active', l.dataset.category === cat));
+                });
+            });
+
+            // 页脚分类链接
+            footerCatLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const cat = link.dataset.category;
+                    setActiveCategory(cat, link);
+                    // 滚动到画廊
+                    document.querySelector('.gallery-section').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            // 模态框关闭
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // 移动菜单切换
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+
+            // ============================================================
+            // 8. 初始化
+            // ============================================================
+            renderHero();
+            renderGallery('all');
+
+            // 处理窗口调整，重新计算布局（无额外操作）
+            // 确保图片加载后关闭loading
+            document.getElementById('galleryLoading').style.display = 'none';
+
+        })();
+    </script>
+
 </body>
 </html>
