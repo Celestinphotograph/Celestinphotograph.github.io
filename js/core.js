@@ -169,7 +169,15 @@ window.CP = (function () {
             renderNav('home');
         } else {
             els.viewHome.classList.remove('active');
+            // 分类页内部切换（如街头→人文、分类→全部图集）时，重播进入动画：
+            // 先移除 active、强制 reflow、再重新添加，让 viewIn 动画从头播放
+            var alreadyActive = els.viewCategory.classList.contains('active');
             els.viewCategory.classList.add('active');
+            if (alreadyActive) {
+                els.viewCategory.classList.remove('active');
+                void els.viewCategory.offsetWidth;
+                els.viewCategory.classList.add('active');
+            }
             if (r.type === 'category') {
                 if (CP.category) CP.category.render(r.key);
                 renderNav('category', r.key);

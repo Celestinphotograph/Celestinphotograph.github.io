@@ -16,7 +16,8 @@ window.CP.viewer = (function () {
         hintTimer: null,
         touchX: 0,
         touchY: 0,
-        opened: false
+        opened: false,
+        hoveringNav: false      // 鼠标是否悬浮在左右切换按钮上
     };
 
     function currentImg() {
@@ -28,6 +29,8 @@ window.CP.viewer = (function () {
         CP.els.viewer.classList.add('show-nav');
         clearTimeout(st.hintTimer);
         st.hintTimer = setTimeout(function () {
+            // 鼠标仍悬浮在切换按钮上时不隐藏，等鼠标移开后再计时
+            if (st.hoveringNav) return;
             CP.els.viewer.classList.remove('show-nav');
         }, ms || 1600);
     }
@@ -71,7 +74,7 @@ window.CP.viewer = (function () {
         if (cap) {
             note.innerHTML = '<div class="note-text">' + CP.utils.esc(cap) + '</div>';
         } else {
-            note.innerHTML = '<div class="note-empty">文字说明待补充</div>';
+            note.innerHTML = '<div class=""></div>';
         }
     }
 
@@ -79,24 +82,34 @@ window.CP.viewer = (function () {
         var img = currentImg();
         var stage = CP.els.viewerStage;
 
-        // 新图片节点（带淡入动画）
-        stage.innerHTML = '';
+        // 新图片先在内存中加载，等加载完成并确定方向后再硬切显示，
+        // 避免"先显示原图再调整位置"的可见跳动
+        st.renderToken = (st.renderToken || 0) + 1;
+        var myToken = st.renderToken;
+
         var el = document.createElement('img');
         el.alt = st.album.title;
         el.draggable = false;
-        el.src = img.url;
+
+        function reveal() {
+            if (myToken !== st.renderToken) return;   // 已被更新的渲染取代
+            stage.innerHTML = '';
+            stage.appendChild(el);
+            setTimeout(layout, 0);
+        }
+
         el.onload = function () {
             setOrientation(el);
             el.classList.add('loaded');
-            setTimeout(layout, 0);
+            reveal();
         };
         el.onerror = function () {
             setOrientation(null);
             el.classList.add('loaded');
             el.style.background = '#e8e8e8';
-            setTimeout(layout, 0);
+            reveal();
         };
-        stage.appendChild(el);
+        el.src = img.url;   // 开始加载（此时不在 DOM 中，不可见）
 
         // 标题 / 页码 / 文字窗口
         CP.els.viewerTitle.textContent = st.album.title;
@@ -174,12 +187,16 @@ window.CP.viewer = (function () {
             if (!btn) return;
             btn.addEventListener('mouseenter', function () {
                 if (!st.opened) return;
-                v.classList.add('show-nav');
+                st.hoveringNav = true;
+                CP.els.viewer.classList.add('show-nav');
                 clearTimeout(st.idleTimer);
+                clearTimeout(st.hintTimer);
             });
             btn.addEventListener('mouseleave', function () {
                 if (!st.opened) return;
-                v.classList.add('show-nav');
+                st.hoveringNav = false;
+                CP.els.viewer.classList.add('show-nav');
+                clearTimeout(st.hintTimer);
                 scheduleHide();
             });
         });

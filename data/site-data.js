@@ -76,11 +76,18 @@ window.SITE_DATA = {
             year: "2025",
             description: "以慢门捕捉城市街角里时间的流动，让静止与运动在同一帧中相遇。",
             location: "",
+            cover: "images/time-travel/01.jpg",
             images: [
-                { url: "images/time-travel/01.jpg", caption: "车流在夜幕中拉成光的丝线，城市以另一种速度流动。" },
-                { url: "images/time-travel/02.jpg", caption: "地铁站里匆忙的人潮，在快门里化作一道温柔的残影。" },
+                { url: "images/time-travel/01.jpg", caption: "" },
+                { url: "images/time-travel/02.jpg", caption: "" },
                 { url: "images/time-travel/03.jpg", caption: "" },
-                { url: "images/time-travel/04.jpg", caption: "" }
+                { url: "images/time-travel/04.jpg", caption: "" },
+                { url: "images/time-travel/05.jpg", caption: "" },
+                { url: "images/time-travel/06.jpg", caption: "" },
+                { url: "images/time-travel/07.jpg", caption: "" },
+                { url: "images/time-travel/08.jpg", caption: "" },
+                { url: "images/time-travel/09.jpg", caption: "" },
+                { url: "images/time-travel/10.jpg", caption: "" }
             ]
         },
 
@@ -92,13 +99,23 @@ window.SITE_DATA = {
             year: "2025",
             description: "在城市的钢筋骨架之间，寻找被忽略的秩序与几何。",
             location: "上海",
+            cover: "images/city-frame/07.jpg",
             images: [
-                { url: "images/city-frame/01.jpg", caption: "从地铁入口仰望，楼梯的线条把天空框成一幅画。" },
-                { url: "images/city-frame/02.jpg", caption: "施工围挡与警示牌，是城市自我更新的日常注脚。" },
+                { url: "images/city-frame/01.jpg", caption: "" },
+                { url: "images/city-frame/02.jpg", caption: "" },
                 { url: "images/city-frame/03.jpg", caption: "" },
                 { url: "images/city-frame/04.jpg", caption: "" },
                 { url: "images/city-frame/05.jpg", caption: "" },
-                { url: "images/city-frame/06.jpg", caption: "雨后积水倒映天空，行走的人踏进另一个世界。" }
+                { url: "images/city-frame/06.jpg", caption: "" },
+                { url: "images/city-frame/07.jpg", caption: "" },
+                { url: "images/city-frame/08.jpg", caption: "" },
+                { url: "images/city-frame/09.jpg", caption: "" },
+                { url: "images/city-frame/10.jpg", caption: "" },
+                { url: "images/city-frame/11.jpg", caption: "" },
+                { url: "images/city-frame/12.jpg", caption: "" },
+                { url: "images/city-frame/13.jpg", caption: "" },
+                { url: "images/city-frame/14.jpg", caption: "" },
+                { url: "images/city-frame/15.jpg", caption: "" },
             ]
         },
 

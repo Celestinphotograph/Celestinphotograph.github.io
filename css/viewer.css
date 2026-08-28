@@ -83,16 +83,17 @@
     pointer-events: auto;
 }
 
-/* ---- 照片区：只占白色面板左侧约 60%，照片靠左（不顶满） ---- */
+/* ---- 照片区：只占白色面板左侧约 80%，照片靠左（不顶满） ---- */
 .viewer-stage {
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 60%;
+    left: 0%;
+    top: 0%;
+    bottom: 0%;
+    width: 80%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    overflow: hidden;          /* 竖图出血裁切：超出舞台的部分裁掉，不溢出白色面板 */
     z-index: 1;
 }
 .viewer-stage img {
@@ -105,16 +106,30 @@
     -webkit-user-drag: none;
     /* 无过渡：切换图片硬切；打开/关闭时跟随 viewer 整体渐显/渐隐 */
 }
+/* 竖图 / 方图：参考印刷出血线，用 cover 填满舞台并轻微放大裁切，
+   牺牲极少量边角信息，确保任意缩放下都不出现白边。
+   【仅电脑端生效】手机端竖图用 contain 完整显示、上下留白 */
+@media (min-width: 769px){    
+    .viewer.is-portrait .viewer-stage img,
+    .viewer.is-square .viewer-stage img {
+        width: 55%;
+        height: 100%;
+        max-width: none;
+        max-height: 100%;
+        object-fit: cover;
+        transform: scale(1.01);
+    }
+}
 
 /* ---- 标题：竖图右上（右侧留白处）；横图左下（照片下方留白处） ---- */
 .viewer-title {
     position: absolute;
-    top: clamp(14px, 2.6vw, 28px);
-    right: clamp(16px, 2.6vw, 32px);
-    max-width: 34%;
+    top: clamp(10px, 2.6vw, 10px);
+    right: clamp(15px, 2.6vw, 15px);
+    max-width: 80%;
     text-align: right;
     font-family: var(--font-serif);
-    font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+    font-size: clamp(0.8rem, 1.8vw, 1.45rem);
     font-weight: 600;
     letter-spacing: .5px;
     color: var(--text);
@@ -122,11 +137,11 @@
 }
 .viewer.is-landscape .viewer-title {
     top: auto;
-    bottom: clamp(14px, 2.6vh, 26px);
-    left: clamp(16px, 2.6vw, 32px);
+    bottom: clamp(10px, 2.6vh, 10px);
+    left: clamp(15px, 2.6vw, 15px);
     right: auto;
     text-align: left;
-    max-width: 34%;
+    max-width: 80%;
 }
 
 /* ---- 张数：右下角 ---- */
@@ -217,10 +232,12 @@
         width: min(92vw, 62vh);
         aspect-ratio: 3 / 4;
     }
-    .viewer-title { top: 12px; right: 12px; max-width: 38%; font-size: .98rem; }
-    .viewer.is-landscape .viewer-title { top: auto; bottom: 12px; left: 12px; right: auto; text-align: left; max-width: 38%; }
+    /* 手机端照片区略收窄，右侧留白更宽，避免标题被挤成两行 */
+    .viewer-stage { width: 52%; }
+    .viewer-title { top: 12px; right: 12px; max-width: 46%; font-size: .84rem; }
+    .viewer.is-landscape .viewer-title { top: auto; bottom: 12px; left: 12px; right: auto; text-align: left; max-width: 60%; }
     .viewer-count { bottom: 12px; right: 12px; font-size: .85rem; }
-    .viewer-note { right: 12px; width: 36%; }
+    .viewer-note { right: 12px; width: 40%; }
     .viewer-close { top: calc(var(--bar1-h) + 10px); left: 12px; }
     .viewer-nav { display: none; }      /* 移动端用滑动 */
 }
