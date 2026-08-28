@@ -1,0 +1,76 @@
+/* ============================================================
+   Celestin Photograph · 分类页 / 影集页
+   ============================================================ */
+
+.page {
+    padding: 0 var(--side);
+    max-width: var(--page-w);
+    margin: 0 auto;
+}
+
+.page-heading {
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 8px 0 34px;
+    text-align: center;
+}
+
+/* 一个图集 = 一张大封面 + 右下角张数 + 下方居中标题 */
+.category-album { margin-bottom: 72px; }
+
+.category-album .album-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    max-height: 82vh;
+    overflow: hidden;
+    cursor: pointer;
+    background: #f0f0f0;
+}
+.category-album .album-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .55s var(--ease);
+}
+.category-album:hover .album-media img { transform: scale(1.015); }
+
+/* 图集右下角：张数 */
+.album-count {
+    position: absolute;
+    right: 18px;
+    bottom: 16px;
+    font-size: .98rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, .55);
+    letter-spacing: .5px;
+    z-index: 2;
+}
+
+/* 下方文字：绿色分类 + 大字标题，居中 */
+.category-album .album-info {
+    margin-top: 14px;
+    text-align: center;
+}
+.category-album .cat-tag { display: block; margin-bottom: 5px; }
+.category-album .album-title {
+    font-size: clamp(1.3rem, 2.6vw, 1.8rem);
+    letter-spacing: .4px;
+    cursor: pointer;
+    transition: color .25s;
+}
+.category-album .album-title:hover { color: var(--accent); }
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 768px) {
+    .category-album { margin-bottom: 52px; }
+    .category-album .album-media { aspect-ratio: 4 / 3; }
+    .album-count { right: 12px; bottom: 12px; font-size: .88rem; }
+    .page-heading { margin: 4px 0 26px; }
+}

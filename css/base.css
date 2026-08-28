@@ -1,0 +1,314 @@
+/* ============================================================
+   Celestin Photograph · 基础样式（变量 / 重置 / 顶部双栏 / 页脚）
+   ============================================================ */
+
+:root {
+    --bg: #ffffff;
+    --text: #1c1c1c;
+    --muted: #8a8a8a;
+    --accent: #3a7d5a;                 /* 分类用的绿色 */
+    --line: #e9e9e9;
+    --bar1-h: 60px;                    /* 第一栏高度 */
+    --bar2-h: 48px;                    /* 第二栏高度 */
+    --page-w: 1560px;                  /* 内容最大宽度 */
+    --side: clamp(18px, 10vw, 200px);  /* 页面左右留白（同参考图，留白较宽） */
+    --side-sm: clamp(14px, 4vw, 72px); /* 顶栏左右留白 */
+    --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", Georgia, serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+    --ease: cubic-bezier(.25, .8, .35, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    /* 顶栏占位高度由 JS 根据「两栏是否可见 + 第二栏是否展开」动态设置 */
+    padding-top: calc(var(--bar1-h) + var(--bar2-h));
+    transition: padding-top .3s var(--ease);
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button {
+    font-family: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+}
+
+/* ============================================================
+   顶部：两个栏
+   ============================================================ */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, .98);
+    z-index: 1000;
+    transition: transform .35s var(--ease);
+}
+
+/* 向下滚动后整组隐藏 */
+.site-header.header-hidden { transform: translateY(-100%); }
+
+/* ---- 第一栏：箭头 / 居中 Logo / 右上更多 ---- */
+.header-bar {
+    height: var(--bar1-h);
+    border-bottom: 1px solid var(--line);
+}
+
+.header-bar-inner {
+    position: relative;
+    max-width: var(--page-w);
+    margin: 0 auto;
+    padding: 0 var(--side-sm);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: #555;
+    border-radius: 6px;
+    transition: color .2s, background .2s, transform .35s var(--ease);
+    z-index: 2;
+}
+.bar-toggle:hover { color: var(--accent); }
+.bar-toggle svg { transition: transform .35s var(--ease); }
+
+/* 收起第二栏时：图标换成“下箭头”，并微微下沉，增强反馈 */
+.bar-toggle.collapsed svg { transform: rotate(180deg) translateY(1px); }
+
+/* 居中 Logo */
+.logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    font-family: var(--font-serif);
+    white-space: nowrap;
+    color: var(--text);
+}
+.logo .logo-main {
+    font-size: 1.28rem;
+    font-weight: 600;
+    letter-spacing: .4px;
+}
+.logo .logo-sub {
+    font-size: .78rem;
+    font-weight: 500;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.bar-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+}
+
+.more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: #555;
+    border-radius: 6px;
+    transition: color .2s, background .2s;
+}
+.more-btn:hover { color: var(--accent); background: #f4f4f4; }
+
+/* 右上“更多”下拉面板（内容待补充，仅保留交互） */
+.more-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 230px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .1);
+    padding: 8px;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity .22s var(--ease), transform .22s var(--ease);
+}
+.more-panel.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+.more-panel .panel-head {
+    font-size: .74rem;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    padding: 8px 12px 6px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+}
+.more-panel .panel-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .9rem;
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: #444;
+    cursor: default;
+}
+.more-panel .panel-item .soon {
+    font-size: .72rem;
+    color: #bbb;
+    letter-spacing: .5px;
+}
+
+/* ---- 第二栏：分类导航 ---- */
+.category-bar {
+    border-bottom: 1px solid var(--line);
+    max-height: var(--bar2-h);
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height .35s var(--ease), opacity .28s ease;
+}
+.category-bar.bar2-collapsed { max-height: 0; opacity: 0; }
+
+.category-bar-inner {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    padding: 0 var(--side-sm);
+    height: var(--bar2-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(20px, 3.2vw, 42px);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.main-nav::-webkit-scrollbar { display: none; }
+
+.main-nav a {
+    font-size: .95rem;
+    font-weight: 500;
+    color: #444;
+    padding: 8px 2px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color .2s, border-color .2s;
+}
+.main-nav a:hover { color: var(--accent); }
+.main-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ============================================================
+   视图容器
+   ============================================================ */
+.view { display: none; }
+.view.active { display: block; animation: viewIn .4s var(--ease); }
+
+@keyframes viewIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   页脚（版权信息，居中）
+   ============================================================ */
+.site-footer {
+    border-top: 1px solid var(--line);
+    margin-top: 10px;
+    padding: 30px var(--side-sm) 34px;
+}
+.footer-inner {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    font-size: .86rem;
+    color: var(--muted);
+}
+.footer-name {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: #444;
+    letter-spacing: .4px;
+}
+
+/* ============================================================
+   通用小工具
+   ============================================================ */
+.cat-tag {
+    font-size: .76rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+}
+
+.album-title {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+/* Toast 提示 */
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%) translateY(16px);
+    background: rgba(20, 20, 20, .85);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: .88rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 3000;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================================================
+   响应式（顶栏 / 页脚）
+   ============================================================ */
+@media (max-width: 768px) {
+    :root { --bar1-h: 52px; --bar2-h: 46px; }
+    .logo .logo-main { font-size: 1.08rem; }
+    .logo .logo-sub { display: none; }
+    .main-nav { gap: 20px; }
+    .main-nav a { font-size: .9rem; }
+    .site-footer { padding: 22px 16px 26px; }
+}

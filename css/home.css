@@ -1,0 +1,127 @@
+/* ============================================================
+   Celestin Photograph · 首页（大图区 + 横向滚动图集区）
+   ============================================================ */
+
+.home { padding-bottom: 20px; }
+
+.home-section {
+    padding: 0 var(--side);
+    margin: 0 auto 64px;
+    max-width: var(--page-w);
+}
+
+/* ---------------- 大图区 ---------------- */
+.featured-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    max-height: 76vh;
+    overflow: hidden;
+    cursor: pointer;
+    background: #f0f0f0;
+}
+.featured-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s var(--ease);
+}
+.featured-media:hover img { transform: scale(1.015); }
+
+/* 图集下方：绿色分类 + 大字图集名，两行居中 */
+.featured-info {
+    margin-top: 18px;
+    text-align: center;
+}
+.featured-info .cat-tag {
+    display: block;
+    margin-bottom: 6px;
+}
+.featured-info .album-title {
+    font-size: clamp(1.5rem, 3.2vw, 2.3rem);
+    letter-spacing: .5px;
+    cursor: pointer;
+    transition: color .25s;
+}
+.featured-info .album-title:hover { color: var(--accent); }
+
+/* ---------------- 横向滚动图集区 ---------------- */
+.scroller { position: relative; }
+
+.scroller-track {
+    display: flex;
+    gap: 26px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 4px 2px 8px;
+}
+.scroller-track::-webkit-scrollbar { display: none; }
+
+.scroller-card {
+    flex: 0 0 auto;
+    width: min(340px, 68vw);
+    scroll-snap-align: start;
+    cursor: pointer;
+}
+.scroller-card .card-media {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+.scroller-card .card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s var(--ease), opacity .3s;
+}
+.scroller-card:hover .card-media img { transform: scale(1.04); opacity: .9; }
+
+.scroller-card .card-info {
+    margin-top: 10px;
+    text-align: left;
+}
+.scroller-card .cat-tag { display: block; margin-bottom: 3px; }
+.scroller-card .album-title {
+    font-size: 1.06rem;
+    letter-spacing: .2px;
+    transition: color .25s;
+}
+.scroller-card:hover .album-title { color: var(--accent); }
+
+/* 滚动箭头（桌面端；移动端用触摸滑动并隐藏） */
+.scroller-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .94);
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, .1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    z-index: 5;
+    transition: background .2s, color .2s, opacity .2s;
+}
+.scroller-arrow:hover { color: var(--accent); }
+.scroller-arrow.prev { left: calc(var(--side) - 22px); }
+.scroller-arrow.next { right: calc(var(--side) - 22px); }
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 900px) {
+    .scroller-card { width: min(300px, 70vw); }
+    .scroller-track { gap: 18px; }
+}
+
+@media (max-width: 768px) {
+    .home-section { margin-bottom: 44px; }
+    .featured-media { aspect-ratio: 4 / 3; }
+    .scroller-arrow { display: none; }   /* 移动端用滑动 */
+}
