@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    Celestin Photograph · 启动入口
    ============================================================ */
 (function () {
@@ -14,6 +14,8 @@
             if (CP.els.viewerNext) CP.els.viewerNext.innerHTML = CP.ICONS.next;
             if (CP.els.viewerClose) CP.els.viewerClose.innerHTML = CP.ICONS.close;
         }
+        // 信息详情面板（关于我 / 联系我 / 彩蛋）
+        if (CP.info && CP.info.bindEvents) CP.info.bindEvents();
     }
 
     if (document.readyState === 'loading') {

@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    Celestin Photograph · 图集详情查看器
    ============================================================
    - 白色面板居中、较大，固定比例（桌面 3:2 / 移动端 3:4），横竖图切换面板不变
@@ -106,18 +106,17 @@
     -webkit-user-drag: none;
     /* 无过渡：切换图片硬切；打开/关闭时跟随 viewer 整体渐显/渐隐 */
 }
-/* 竖图 / 方图：参考印刷出血线，用 cover 填满舞台并轻微放大裁切，
+/* 竖图：参考印刷出血线（正方形图用 contain 完整显示，不裁切），用 cover 填满舞台并轻微放大裁切，
    牺牲极少量边角信息，确保任意缩放下都不出现白边。
    【仅电脑端生效】手机端竖图用 contain 完整显示、上下留白 */
 @media (min-width: 769px){    
-    .viewer.is-portrait .viewer-stage img,
-    .viewer.is-square .viewer-stage img {
+    .viewer.is-portrait .viewer-stage img {
         width: 55%;
         height: 100%;
         max-width: none;
         max-height: 100%;
         object-fit: cover;
-        transform: scale(1.01);
+        transform: scale(1);
     }
 }
 
@@ -156,17 +155,15 @@
     z-index: 2;
 }
 
-/* ---- 文字说明：白色面板右侧留白处，垂直居中 ---- */
+/* ---- 文字说明：与图片右下角绑定（JS 定位），首字对齐图片右端+半字距，底边与图片底边平齐 ---- */
 .viewer-note {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: clamp(16px, 3vw, 40px);
-    width: min(300px, 34%);
-    font-size: .92rem;
-    line-height: 1.9;
+    font-size: .78rem;
+    line-height: 1.6;
     color: #555;
     z-index: 2;
+    pointer-events: none;
+    word-break: break-word;
 }
 .viewer-note .note-text { white-space: pre-line; }
 .viewer-note .note-empty {
@@ -228,16 +225,166 @@
    响应式（移动端：左右滑动切换，隐藏箭头；面板 3:4 竖版，照片靠左）
    ============================================================ */
 @media (max-width: 768px) {
+    /* ===== 手机端：拍立得式布局 —— 图片在上（带白边），标题/文字/页码在下 ===== */
     .viewer-panel {
         width: min(92vw, 62vh);
-        aspect-ratio: 3 / 4;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
-    /* 手机端照片区略收窄，右侧留白更宽，避免标题被挤成两行 */
-    .viewer-stage { width: 52%; }
-    .viewer-title { top: 12px; right: 12px; max-width: 46%; font-size: .84rem; }
-    .viewer.is-landscape .viewer-title { top: auto; bottom: 12px; left: 12px; right: auto; text-align: left; max-width: 60%; }
-    .viewer-count { bottom: 12px; right: 12px; font-size: .85rem; }
-    .viewer-note { right: 12px; width: 40%; }
+    .viewer.is-portrait .viewer-panel { aspect-ratio: 3 / 4; }
+    .viewer.is-landscape .viewer-panel,
+    .viewer.is-square .viewer-panel { aspect-ratio: 4 / 5; }
+    .viewer-stage {
+        position: relative;
+        left: auto; top: auto; bottom: auto;
+        width: 100%;
+        flex: 1 1 auto;
+        min-height: 0;
+        padding: 16px 16px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .viewer-stage img {
+        max-width: 100%; max-height: 100%;
+        width: auto; height: auto;
+        object-fit: contain;
+        display: block;
+    }
+    .viewer-title {
+        position: relative;
+        top: auto; right: auto; bottom: auto; left: auto;
+        text-align: left;
+        max-width: none;
+        margin: 14px 16px 4px;
+        font-size: 1.05rem;
+    }
+    .viewer.is-landscape .viewer-title,
+    .viewer.is-square .viewer-title {
+        top: auto; bottom: auto; left: auto; right: auto;
+        text-align: left; max-width: none;
+    }
+    .viewer-note {
+        position: relative;
+        top: auto !important; left: auto !important; bottom: auto !important; right: auto !important;
+        width: auto !important; transform: none !important;
+        margin: 0 16px 16px;
+        font-size: .8rem; line-height: 1.6;
+        flex: 0 1 auto; min-height: 0; overflow: hidden;
+    }
+    .viewer-count { bottom: 14px; right: 16px; font-size: .82rem; }
     .viewer-close { top: calc(var(--bar1-h) + 10px); left: 12px; }
-    .viewer-nav { display: none; }      /* 移动端用滑动 */
+    .viewer-nav { display: none; }
+}
+
+/* ============================================================
+   信息详情面板（关于我 / 联系我）—— 同款白色背景 + 模糊背景
+   ============================================================ */
+.info-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.info-modal.open { display: flex; animation: viewIn .4s var(--ease); }
+.info-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+.info-panel {
+    position: relative;
+    z-index: 1;
+    width: min(86vw, 880px);
+    max-height: 86vh;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+.info-photo {
+    flex: 0 0 44%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.info-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.info-content {
+    flex: 1 1 auto;
+    padding: 44px 38px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.info-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: .5px;
+}
+.info-text {
+    font-size: .92rem;
+    line-height: 1.9;
+    color: #555;
+    white-space: pre-line;
+}
+.info-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, .06);
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s, transform .3s, color .2s;
+}
+.info-close::after {
+    content: "\00d7";
+    font-size: 1.35rem;
+    line-height: 1;
+    font-weight: 400;
+}
+.info-close:hover { background: rgba(0, 0, 0, .12); color: #000; transform: rotate(90deg); }
+
+/* 移动端：信息面板改为上下布局（照片在上，文字在下） */
+@media (max-width: 768px) {
+    .info-panel {
+        flex-direction: column;
+        width: min(92vw, 420px);
+        min-height: min(88vh, 600px); max-height: 88vh;
+    }
+    .info-photo {
+        flex: 0 0 38vh;
+        max-height: 38vh;
+    }
+    .info-content {
+        padding: 24px 20px 28px;
+        gap: 14px;
+    }
+    .info-title { font-size: 1.2rem; }
+    .info-text { font-size: .85rem; line-height: 1.75; }
 }

@@ -1,6 +1,24 @@
-/* ============================================================
+﻿/* ============================================================
    Celestin Photograph · 基础样式（变量 / 重置 / 顶部双栏 / 页脚）
    ============================================================ */
+@font-face {
+    font-family: "我的字体";
+    src: url("../fonts/GOTHIC.TTF") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "我的字体";
+    src: url("../fonts/GOTHICB.TTF") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: "我的字体";
+    src: url("../fonts/GOTHICI.TTF") format("truetype");
+    font-weight: normal;
+    font-style: italic;
+}
 
 :root {
     --bg: #ffffff;
@@ -114,11 +132,13 @@ button {
     color: var(--text);
 }
 .logo .logo-main {
+    font-family: "我的字体", sans-serif;
     font-size: 1.28rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: .4px;
 }
 .logo .logo-sub {
+    font-family: "我的字体", sans-serif;
     font-size: .78rem;
     font-weight: 500;
     letter-spacing: 2.2px;

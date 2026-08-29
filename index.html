@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -6,10 +6,10 @@
     <title>Celestin Photograph</title>
     <meta name="description" content="Celestin Photograph · 摄影作品集" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link rel="stylesheet" href="css/base.css?v=10" />
-    <link rel="stylesheet" href="css/home.css?v=10" />
-    <link rel="stylesheet" href="css/category.css?v=10" />
-    <link rel="stylesheet" href="css/viewer.css?v=10" />
+    <link rel="stylesheet" href="css/base.css?v=14" />
+    <link rel="stylesheet" href="css/home.css?v=14" />
+    <link rel="stylesheet" href="css/category.css?v=14" />
+    <link rel="stylesheet" href="css/viewer.css?v=14" />
 </head>
 <body>
 
@@ -29,9 +29,9 @@
                     <button class="more-btn" id="moreBtn" aria-label="更多信息"></button>
                     <div class="more-panel" id="morePanel">
                         <div class="panel-head">更多信息</div>
-                        <div class="panel-item">关于本站 <span class="soon">待补充</span></div>
-                        <div class="panel-item">联系我 <span class="soon">待补充</span></div>
-                        <div class="panel-item">版权说明 <span class="soon">待补充</span></div>
+                        <div class="panel-item" data-info="about">关于我</div>
+                        <div class="panel-item" data-info="contact">联系我</div>
+                        <div class="panel-item" data-info="easter">彩蛋</div>
                     </div>
                 </div>
             </div>
@@ -65,6 +65,20 @@
         <button class="viewer-nav next" id="viewerNext" aria-label="下一张"></button>
     </div>
 
+    <!-- ================= 信息详情面板（关于我 / 联系我） ================= -->
+    <div class="info-modal" id="infoModal" aria-hidden="true">
+        <div class="info-backdrop" id="infoBackdrop"></div>
+        <div class="info-panel" id="infoPanel">
+            <div class="info-photo" id="infoPhoto">
+                <img id="infoPhotoImg" alt="" />
+            </div>
+            <div class="info-content">
+                <div class="info-title" id="infoTitle"></div>
+                <div class="info-text" id="infoText"></div>
+            </div>
+        </div>
+        <button class="info-close" id="infoClose" aria-label="关闭"></button>
+    </div>
     <!-- ================= 页脚（版权） ================= -->
     <footer class="site-footer">
         <div class="footer-inner">
@@ -74,12 +88,13 @@
     </footer>
 
     <!-- 数据配置（★ 用户编辑的文件） -->
-    <script src="data/site-data.js?v=10"></script>
+    <script src="data/site-data.js?v=14"></script>
     <!-- 逻辑模块 -->
-    <script src="js/core.js?v=10"></script>
-    <script src="js/home.js?v=10"></script>
-    <script src="js/category.js?v=10"></script>
-    <script src="js/viewer.js?v=10"></script>
-    <script src="js/app.js?v=10"></script>
+    <script src="js/core.js?v=14"></script>
+    <script src="js/home.js?v=14"></script>
+    <script src="js/category.js?v=14"></script>
+    <script src="js/viewer.js?v=14"></script>
+    <script src="js/info.js?v=14"></script>
+    <script src="js/app.js?v=14"></script>
 </body>
 </html>

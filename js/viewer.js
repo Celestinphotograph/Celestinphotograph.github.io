@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    Celestin Photograph · 图集详情查看器
    - 白色面板固定 3:2（横/竖图切换面板不变），照片在面板内自适应
    - 竖图：标题右上、计数右下；横图：标题左下、计数右下
@@ -63,6 +63,39 @@ window.CP.viewer = (function () {
             els.viewerPrev.style.right = 'auto';
             els.viewerNext.style.left = 'auto';
             els.viewerNext.style.right = Math.max(12, innerWidth - p.right - bw - gap) + 'px';
+        }
+
+        // 文字说明：电脑端绑定到图片右下角；手机端用 CSS 流式布局（图上文下）
+        var stage = els.viewerStage;
+        var note = els.viewerNote;
+        var imgEl = stage ? stage.querySelector('img') : null;
+        if (window.innerWidth >= 769) {
+            if (imgEl && note && note.textContent.trim()) {
+                var ir = imgEl.getBoundingClientRect();
+                var noteFs = parseFloat(getComputedStyle(note).fontSize) || 12;
+                var halfChar = noteFs * 0.5;
+                var cr = els.viewerCount.getBoundingClientRect();
+                note.style.top = 'auto';
+                note.style.transform = 'none';
+                note.style.width = 'auto';
+                note.style.left = (ir.right - p.left + halfChar) + 'px';
+                note.style.bottom = (p.bottom - ir.bottom) + 'px';
+                note.style.right = Math.max(12, p.right - cr.left + 8) + 'px';
+            } else if (note) {
+                note.style.top = 'auto';
+                note.style.left = 'auto';
+                note.style.bottom = 'auto';
+                note.style.right = 'auto';
+                note.style.transform = 'none';
+                note.style.width = 'auto';
+            }
+        } else if (note) {
+            note.style.top = '';
+            note.style.left = '';
+            note.style.bottom = '';
+            note.style.right = '';
+            note.style.transform = '';
+            note.style.width = '';
         }
     }
 
